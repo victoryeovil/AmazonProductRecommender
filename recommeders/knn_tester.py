@@ -18,6 +18,10 @@ def get_product_name(product_id):
     return products.loc[products['product_id'] == product_id, 'product_title'].iloc[0]
 
 
+def get_customer_reviewed_products(customer_id):
+    return data_main.loc[data_main['customer_id'] == customer_id, 'product_title'].iloc[0]
+
+
 def get_knn_recommendation(customer_id, top_n=10):
     reader = Reader(rating_scale=(1, 5))
     data = Dataset.load_from_df(data_main[["customer_id", "product_id", "star_rating"]], reader)
@@ -57,7 +61,11 @@ def get_knn_recommendation(customer_id, top_n=10):
         if not itemID in watched:
             recommendations.append(get_product_name(training_set.to_raw_iid(itemID)))
             position += 1
-            if position > 10:
+            if position > top_n:
                 break  # We only want top 10
+    for rec in recommendations:
+        print(rec)
 
-    return recommendations
+    rated_products = get_customer_reviewed_products(customer_id)
+
+    return [rated_products], recommendations
