@@ -43,6 +43,6 @@ def load_customer_ids(path_to_customers):
                      error_bad_lines=False,
                      warn_bad_lines=False, )
     df = df.dropna()
-    customer_list = df['customer_id'].to_list()
+    customer_list = df['customer_id'].drop_duplicates().to_list()
     return customer_list
 
