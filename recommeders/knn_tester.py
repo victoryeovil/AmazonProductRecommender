@@ -24,7 +24,7 @@ def get_knn_recommendation(customer_id, top_n=10):
 
     training_set = data.build_full_trainset()
 
-    filename = '../resources/models/knn.model'
+    filename = 'resources/models/knn.model'
 
     model = load(file_name=filename)
     similarity_matrix = model[1].compute_similarities()
