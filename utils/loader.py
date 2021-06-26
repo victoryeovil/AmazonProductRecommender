@@ -1,4 +1,6 @@
 import pandas as pd
+from os import walk
+
 
 
 def load_product_titles(path_to_products):
@@ -46,3 +48,8 @@ def load_customer_ids(path_to_customers):
     customer_list = df['customer_id'].drop_duplicates().to_list()
     return customer_list
 
+def get_trained_models(path_to_models):
+   return next(walk(path_to_models), (None, None, []))[2]  # [] if no file
+
+def get_datasets(path_to_datasets):
+   return next(walk(path_to_datasets), (None, None, []))[2]  # [] if no file
