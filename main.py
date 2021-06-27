@@ -1,7 +1,7 @@
 import streamlit as st
 
-from recommeders.knn_tester import get_knn_recommendation
-from recommeders.svd_tester import get_svd_recommendation
+from recommeders.knn_recommender import get_knn_recommendation
+from recommeders.svd_recommender import get_svd_recommendation
 from utils.loader import load_customer_ids, get_trained_models, get_main_dataframe
 
 # Data handling dependencies
@@ -12,7 +12,6 @@ customer_list = load_customer_ids(data_main)
 
 
 def main():
-
     page_options = ["Recommender System", "Model Trainer"]
 
     page_selection = st.sidebar.selectbox("Choose Option", page_options)
@@ -36,6 +35,7 @@ def main():
                 try:
                     with st.spinner('Crunching the numbers...'):
                         previous_likes, top_recommendations = get_knn_recommendation(customer_id=selected_customer,
+                                                                                     data_main=data_main,
                                                                                      top_n=5)
                     st.title("The Customer Previously Reviewed:")
                     for rec in previous_likes:

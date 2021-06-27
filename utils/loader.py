@@ -1,6 +1,6 @@
-import pandas as pd
 from os import walk
-import streamlit as st
+
+import pandas as pd
 
 
 # @st.cache
@@ -62,4 +62,3 @@ def get_main_dataframe(dataset_path):
                             error_bad_lines=False,
                             warn_bad_lines=False)
     return data_main
-

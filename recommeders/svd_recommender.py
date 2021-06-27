@@ -1,19 +1,9 @@
 import heapq
-from collections import defaultdict
-from operator import itemgetter
-from utils.common import get_top_n
 
-import pandas as pd
 from surprise import Dataset, Reader
 from surprise.dump import *
 
-
-def get_product_name(products, product_id):
-    return products.loc[products['product_id'] == product_id, 'product_title'].iloc[0]
-
-
-def get_customer_reviewed_products(data_main, customer_id):
-    return data_main.loc[data_main['customer_id'] == customer_id, 'product_title'].iloc[0]
+from utils.common import get_top_n, get_customer_reviewed_products, get_product_name
 
 
 def get_svd_recommendation(customer_id, data_main, top_n=10):

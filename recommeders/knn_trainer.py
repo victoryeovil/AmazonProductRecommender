@@ -1,11 +1,9 @@
-import pandas as pd
 from surprise import Dataset, Reader, KNNWithMeans
 from surprise.dump import *
 
-data_main = pd.read_csv('../resources/dataset/amazon_reviews_us_Digital_Software_v1_00.tsv',
-                        sep='\t',
-                        error_bad_lines=False,
-                        warn_bad_lines=False)
+from utils.loader import get_main_dataframe
+
+data_main = get_main_dataframe('resources/dataset/amazon_reviews_us_Digital_Software_v1_00.tsv')
 
 reader = Reader(rating_scale=(1, 5))
 data = Dataset.load_from_df(data_main[["customer_id", "product_id", "star_rating"]], reader)
