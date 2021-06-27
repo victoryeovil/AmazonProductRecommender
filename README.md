@@ -16,3 +16,8 @@
 $ streamlit run main.py 
 ```
 - The application should be accessible via the url `http://localhost:8501`
+
+## References
+- https://surprise.readthedocs.io/en/stable/index.html
+- https://www.youtube.com/watch?v=fEd1p8-3S7w&t=1176s
+- https://hackernoon.com/introduction-to-recommender-system-part-1-collaborative-filtering-singular-value-decomposition-44c9659c5e75
