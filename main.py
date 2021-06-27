@@ -8,10 +8,12 @@ from utils.loader import load_customer_ids, get_trained_models
 
 # Data Loading
 # title_list = load_product_titles('resources/dataset/amazon_reviews_us_Digital_Software_v1_00.tsv')
+
 customer_list = load_customer_ids('resources/dataset/amazon_reviews_us_Digital_Software_v1_00.tsv')
 
 
 def main():
+
     page_options = ["Recommender System", "Model Trainer"]
 
     page_selection = st.sidebar.selectbox("Choose Option", page_options)
@@ -68,11 +70,11 @@ def main():
     else:
         models = get_trained_models('resources/models/')
         st.write('### Available Models')
-        selected_models = st.selectbox('Selected Model',models)
+        selected_models = st.selectbox('Selected Model', models)
 
         datasets = get_trained_models('resources/dataset/')
         st.write('### Available Datasets')
-        selected_models = st.selectbox('Selected Dataset',datasets)
+        selected_models = st.selectbox('Selected Dataset', datasets)
 
 
 if __name__ == '__main__':

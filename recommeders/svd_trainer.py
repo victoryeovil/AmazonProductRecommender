@@ -13,7 +13,7 @@ data = Dataset.load_from_df(data_main[["customer_id", "product_id", "star_rating
 trainingSet = data.build_full_trainset()
 
 
-algo = SVDpp()
+algo = SVDpp(n_epochs=1000, random_state=5)
 algo.fit(trainingSet)
 
 predictions = algo.test(trainingSet.build_testset())
