@@ -23,7 +23,7 @@ def main():
         # st.image('resources/images/amazon-recommends.png', use_column_width=True)
 
         st.write('### Recommendation For Customers')
-        selected_customer = st.selectbox('Customer ID', customer_list[14930:15200])
+        selected_customer = st.selectbox('Customer ID', customer_list[1400:15700])
 
         # Recommender System algorithm selection
         sys = st.radio("Select an algorithm",
