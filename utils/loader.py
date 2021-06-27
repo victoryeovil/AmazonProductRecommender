@@ -1,7 +1,5 @@
 import pandas as pd
 from os import walk
-import names
-
 import streamlit as st
 
 
@@ -30,12 +28,12 @@ def load_product_titles(path_to_products):
 
 
 # @st.cache
-def load_customer_ids(path_to_customers):
-    """Load movie titles from database records.
+def load_customer_ids(data_main):
+    """Load Product titles from Dataframe.
 
     Parameters
     ----------
-    path_to_customers : str
+    data_main : Dataframe
         Relative or absolute path to customer database stored
         in .tsv format.
 
@@ -44,11 +42,8 @@ def load_customer_ids(path_to_customers):
     list[str]
         Customer ID.
     """
-    df = pd.read_csv(path_to_customers, sep='\t',
-                     error_bad_lines=False,
-                     warn_bad_lines=False, )
-    df = df.dropna()
-    customer_list = df['customer_id'].drop_duplicates().to_list()
+    data_main = data_main.dropna()
+    customer_list = data_main['customer_id'].drop_duplicates().to_list()
 
     return customer_list
 
@@ -59,3 +54,12 @@ def get_trained_models(path_to_models):
 
 def get_datasets(path_to_datasets):
     return next(walk(path_to_datasets), (None, None, []))[2]  # [] if no file
+
+
+def get_main_dataframe(dataset_path):
+    data_main = pd.read_csv(dataset_path,
+                            sep='\t',
+                            error_bad_lines=False,
+                            warn_bad_lines=False)
+    return data_main
+

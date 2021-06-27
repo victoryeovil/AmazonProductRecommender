@@ -2,14 +2,13 @@ import streamlit as st
 
 from recommeders.knn_tester import get_knn_recommendation
 from recommeders.svd_tester import get_svd_recommendation
-from utils.loader import load_customer_ids, get_trained_models
+from utils.loader import load_customer_ids, get_trained_models, get_main_dataframe
 
 # Data handling dependencies
 
 # Data Loading
-# title_list = load_product_titles('resources/dataset/amazon_reviews_us_Digital_Software_v1_00.tsv')
-
-customer_list = load_customer_ids('resources/dataset/amazon_reviews_us_Digital_Software_v1_00.tsv')
+data_main = get_main_dataframe('resources/dataset/amazon_reviews_us_Digital_Software_v1_00.tsv')
+customer_list = load_customer_ids(data_main)
 
 
 def main():
@@ -47,13 +46,14 @@ def main():
                         st.write(str(i + 1) + '. ' + rec)
                 except:
 
-                    st.error("Oops! Looks like this algorithm does't work.\
+                    st.error("Oops! Looks like this algorithm doesn't work.\
                               We'll need to fix it!")
         else:
             if st.button("Recommend"):
                 try:
                     with st.spinner('Crunching the numbers...'):
                         previous_likes, top_recommendations = get_svd_recommendation(customer_id=selected_customer,
+                                                                                     data_main=data_main,
                                                                                      top_n=5)
                     st.title("The Customer Previously Reviewed:")
                     for rec in previous_likes:
@@ -64,7 +64,7 @@ def main():
                         st.write(str(i + 1) + '. ' + rec)
                 except:
 
-                    st.error("Oops! Looks like this algorithm does't work.\
+                    st.error("Oops! Looks like this algorithm doesn't work.\
                               We'll need to fix it!")
 
     else:

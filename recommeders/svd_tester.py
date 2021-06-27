@@ -7,25 +7,20 @@ import pandas as pd
 from surprise import Dataset, Reader
 from surprise.dump import *
 
-data_main = pd.read_csv('resources/dataset/amazon_reviews_us_Digital_Software_v1_00.tsv',
-                        sep='\t',
-                        error_bad_lines=False,
-                        warn_bad_lines=False)
 
-products = data_main[['product_id', 'product_title']].drop_duplicates()
-
-
-def get_product_name(product_id):
+def get_product_name(products, product_id):
     return products.loc[products['product_id'] == product_id, 'product_title'].iloc[0]
 
 
-def get_customer_reviewed_products(customer_id):
+def get_customer_reviewed_products(data_main, customer_id):
     return data_main.loc[data_main['customer_id'] == customer_id, 'product_title'].iloc[0]
 
 
-def get_svd_recommendation(customer_id, top_n=10):
+def get_svd_recommendation(customer_id, data_main, top_n=10):
     reader = Reader(rating_scale=(1, 5))
     data = Dataset.load_from_df(data_main[["customer_id", "product_id", "star_rating"]], reader)
+
+    products = data_main[['product_id', 'product_title']].drop_duplicates()
 
     training_set = data.build_full_trainset()
 
@@ -49,17 +44,15 @@ def get_svd_recommendation(customer_id, top_n=10):
     k_neighbors = heapq.nlargest(k, all_recommendations, key=lambda t: t[3])
     top_t = get_top_n(k_neighbors, n=k)
 
-    rated_products = get_customer_reviewed_products(customer_id)
+    rated_products = get_customer_reviewed_products(data_main, customer_id)
 
     position = 0
     recommendations = []
     for rec in top_t[customer_id]:
         if not rec[0] in watched:
-            recommendations.append(get_product_name(rec[0]))
+            recommendations.append(get_product_name(products, rec[0]))
             position += 1
-            if (position >= top_n): break  # We only want top 10
-
-    for rec in recommendations:
-        print(rec)
+            if position >= top_n:
+                break  # We only want top 10
 
     return [rated_products], recommendations
