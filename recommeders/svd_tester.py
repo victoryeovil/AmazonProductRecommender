@@ -1,6 +1,7 @@
 import heapq
 from collections import defaultdict
 from operator import itemgetter
+from utils.common import get_top_n
 
 import pandas as pd
 from surprise import Dataset, Reader
@@ -31,41 +32,34 @@ def get_svd_recommendation(customer_id, top_n=10):
     filename = 'resources/models/svd.model'
 
     model = load(file_name=filename)
-    similarity_matrix = model[1].compute_similarities()
 
-    test_subject = customer_id
-    k = top_n
-
-    test_subject_iid = training_set.to_inner_uid(test_subject)
+    test_subject_iid = training_set.to_inner_uid(customer_id)
     test_subject_ratings = training_set.ur[test_subject_iid]
-    k_neighbors = heapq.nlargest(k, test_subject_ratings, key=lambda t: t[1])
 
-    candidates = defaultdict(float)
-
-    for itemID, rating in k_neighbors:
-        try:
-            similarities = similarity_matrix[itemID]
-            for innerID, score in enumerate(similarities):
-                candidates[innerID] += score * (rating / 5.0)
-        except:
-            continue
+    k = top_n + len(test_subject_ratings)
 
     watched = {}
     for itemID, rating in training_set.ur[test_subject_iid]:
-        watched[itemID] = 1
+        watched[training_set.to_raw_iid(itemID)] = 1
 
-    recommendations = []
+    all_recommendations = []
+    for item in products.product_id:
+        all_recommendations.append(model[1].predict(uid=customer_id, iid=item))
 
-    position = 0
-    for itemID, rating_sum in sorted(candidates.items(), key=itemgetter(1), reverse=True):
-        if not itemID in watched:
-            recommendations.append(get_product_name(training_set.to_raw_iid(itemID)))
-            position += 1
-            if position > top_n:
-                break  # We only want top 10
-    for rec in recommendations:
-        print(rec)
+    k_neighbors = heapq.nlargest(k, all_recommendations, key=lambda t: t[3])
+    top_t = get_top_n(k_neighbors, n=k)
 
     rated_products = get_customer_reviewed_products(customer_id)
+
+    position = 0
+    recommendations = []
+    for rec in top_t[customer_id]:
+        if not rec[0] in watched:
+            recommendations.append(get_product_name(rec[0]))
+            position += 1
+            if (position >= top_n): break  # We only want top 10
+
+    for rec in recommendations:
+        print(rec)
 
     return [rated_products], recommendations
