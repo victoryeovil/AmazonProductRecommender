@@ -1,4 +1,5 @@
 import heapq
+from pathlib import Path
 
 from surprise import Dataset, Reader
 from surprise.dump import *
@@ -14,7 +15,7 @@ def get_svd_recommendation(customer_id, data_main, top_n=10):
 
     training_set = data.build_full_trainset()
 
-    filename = 'resources/models/svd.model'
+    filename = Path().joinpath('resources', 'models', 'svd.model')
 
     model = load(file_name=filename)
 
@@ -42,7 +43,7 @@ def get_svd_recommendation(customer_id, data_main, top_n=10):
         if not rec[0] in watched:
             recommendations.append(get_product_name(products, rec[0]))
             position += 1
-            if position >= top_n:
+            if position > top_n:
                 break  # We only want top 10
 
     return [rated_products], recommendations

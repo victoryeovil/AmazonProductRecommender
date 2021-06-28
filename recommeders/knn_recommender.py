@@ -1,10 +1,10 @@
 import heapq
 from collections import defaultdict
 from operator import itemgetter
+from pathlib import Path
 
 from surprise import Dataset, Reader
 from surprise.dump import *
-
 from utils.common import get_customer_reviewed_products, get_product_name
 
 
@@ -16,7 +16,7 @@ def get_knn_recommendation(customer_id, data_main, top_n=10):
 
     training_set = data.build_full_trainset()
 
-    filename = 'resources/models/knn.model'
+    filename = Path().joinpath('resources','models','knn.model')
 
     model = load(file_name=filename)
     similarity_matrix = model[1].compute_similarities()
