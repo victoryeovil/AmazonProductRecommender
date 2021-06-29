@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from surprise import Dataset, Reader, SVD
+from surprise import Dataset, Reader, SVDpp
 from surprise.dump import *
 
 from utils.loader import get_main_dataframe
@@ -17,7 +17,7 @@ data = Dataset.load_from_df(data_main[["customer_id", "product_id", "star_rating
 trainingSet = data.build_full_trainset()
 
 # Train and Test KNN Model with Training/ Test Dataset
-algo = SVD(n_epochs=100, lr_all=0.1, random_state=5)
+algo = SVDpp(n_epochs=100, lr_all=0.1, random_state=5)
 algo.fit(trainingSet)
 predictions = algo.test(trainingSet.build_testset())
 
