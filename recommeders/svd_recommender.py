@@ -1,4 +1,5 @@
 import heapq
+import time
 from pathlib import Path
 
 from surprise import Dataset, Reader
@@ -8,6 +9,8 @@ from utils.common import get_top_n, get_customer_reviewed_products, get_product_
 
 
 def get_svd_recommendation(customer_id, data_main, top_n=10):
+    initial = time.perf_counter()
+
     reader = Reader(rating_scale=(1, 5))
     data = Dataset.load_from_df(data_main[["customer_id", "product_id", "star_rating"]], reader)
     products = data_main[['product_id', 'product_title']].drop_duplicates()
@@ -49,4 +52,7 @@ def get_svd_recommendation(customer_id, data_main, top_n=10):
             if position > top_n:
                 break  # We only want top_n recommendations
 
-    return [rated_products], recommendations
+    final = time.perf_counter()
+    time_taken = f"{final - initial:0.4f}"
+
+    return time_taken, [rated_products], recommendations

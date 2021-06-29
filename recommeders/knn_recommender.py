@@ -1,4 +1,5 @@
 import heapq
+import time
 from collections import defaultdict
 from operator import itemgetter
 from pathlib import Path
@@ -10,6 +11,7 @@ from utils.common import get_customer_reviewed_products, get_product_name
 
 
 def get_knn_recommendation(customer_id, data_main, top_n=10):
+    initial = time.perf_counter()
     reader = Reader(rating_scale=(1, 5))
     data = Dataset.load_from_df(data_main[["customer_id", "product_id", "star_rating"]], reader)
 
@@ -59,4 +61,7 @@ def get_knn_recommendation(customer_id, data_main, top_n=10):
 
     rated_products = get_customer_reviewed_products(data_main, customer_id)
 
-    return [rated_products], recommendations
+    final = time.perf_counter()
+    time_taken = f"{final - initial:0.4f}"
+
+    return time_taken, [rated_products], recommendations

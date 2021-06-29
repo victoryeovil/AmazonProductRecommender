@@ -33,9 +33,10 @@ def main():
                 try:
                     with st.spinner('Crunching the numbers...'):
                         # Get Recommendations from the KNN trained model using Cosine Similarity
-                        previous_likes, top_recommendations = get_knn_recommendation(customer_id=selected_customer,
-                                                                                     data_main=data_main,
-                                                                                     top_n=5)
+                        time_taken, previous_likes, top_recommendations = get_knn_recommendation(
+                            customer_id=selected_customer,
+                            data_main=data_main,
+                            top_n=5)
                     st.write("## The Customer Previously Reviewed:")
                     for rec in previous_likes:
                         st.write(rec)
@@ -43,6 +44,7 @@ def main():
                     st.write("## We think the customer will like:")
                     for i, rec in enumerate(top_recommendations):
                         st.write(str(i + 1) + '. ' + rec)
+                    st.write(f"_Recommendations Generated in {time_taken} seconds_")
                 except:
 
                     st.error("Oops! Looks like this algorithm doesn't work.\
@@ -52,9 +54,10 @@ def main():
                 try:
                     with st.spinner('Crunching the numbers...'):
                         # Get Recommendations from the SVD trained model
-                        previous_likes, top_recommendations = get_svd_recommendation(customer_id=selected_customer,
-                                                                                     data_main=data_main,
-                                                                                     top_n=5)
+                        time_taken, previous_likes, top_recommendations = get_svd_recommendation(
+                            customer_id=selected_customer,
+                            data_main=data_main,
+                            top_n=5)
                     st.write("### The Customer Previously Reviewed:")
                     for rec in previous_likes:
                         st.write(rec)
@@ -62,6 +65,9 @@ def main():
                     st.write("### We think the customer will like:")
                     for i, rec in enumerate(top_recommendations):
                         st.write(str(i + 1) + '. ' + rec)
+
+                    st.write(f"_Recommendations Generated in {time_taken} seconds_")
+
                 except:
 
                     st.error("Oops! Looks like this algorithm doesn't work.\
