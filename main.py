@@ -19,10 +19,8 @@ def main():
     if page_selection == "Recommender System":
         # Header contents
         st.write('# Product Recommender Engine')
-        st.write('### EXPLORE CS412 Unsupervised Predictions')
-        # st.image('resources/images/amazon-recommends.png', use_column_width=True)
 
-        st.write('### Recommendation For Customers')
+        st.write('## Based On Amazon Customers Reviews')
         selected_customer = st.selectbox('Customer ID', customer_list[1400:15700])
 
         # Recommender System algorithm selection
@@ -38,11 +36,11 @@ def main():
                         previous_likes, top_recommendations = get_knn_recommendation(customer_id=selected_customer,
                                                                                      data_main=data_main,
                                                                                      top_n=5)
-                    st.title("The Customer Previously Reviewed:")
+                    st.write("## The Customer Previously Reviewed:")
                     for rec in previous_likes:
                         st.write(rec)
 
-                    st.title("We think the customer will like:")
+                    st.write("## We think the customer will like:")
                     for i, rec in enumerate(top_recommendations):
                         st.write(str(i + 1) + '. ' + rec)
                 except:
@@ -57,11 +55,11 @@ def main():
                         previous_likes, top_recommendations = get_svd_recommendation(customer_id=selected_customer,
                                                                                      data_main=data_main,
                                                                                      top_n=5)
-                    st.title("The Customer Previously Reviewed:")
+                    st.write("### The Customer Previously Reviewed:")
                     for rec in previous_likes:
                         st.write(rec)
 
-                    st.title("We think the customer will like:")
+                    st.write("### We think the customer will like:")
                     for i, rec in enumerate(top_recommendations):
                         st.write(str(i + 1) + '. ' + rec)
                 except:
