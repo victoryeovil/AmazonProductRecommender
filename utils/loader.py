@@ -29,7 +29,7 @@ def load_product_titles(path_to_products):
 
 # @st.cache
 def load_customer_ids(data_main):
-    """Load Product titles from Dataframe.
+    """Load Customer IDs from Dataframe.
 
     Parameters
     ----------
@@ -61,4 +61,26 @@ def get_main_dataframe(dataset_path):
                             sep='\t',
                             error_bad_lines=False,
                             warn_bad_lines=False)
-    return data_main
+    # Drop Null Values
+    combine_product_rating = data_main.dropna(axis=0, subset=['product_title'])
+
+    # Get Rating Count Per Product
+    product_ratingCount = (combine_product_rating.
+        groupby(by=['product_title'])['star_rating'].
+        count().
+        reset_index().
+        rename(columns={'star_rating': 'totalRatingCount'})
+    [['product_title', 'totalRatingCount']]
+        )
+
+    # Combine Rating count to get record
+    rating_with_totalRatingCount = combine_product_rating.merge(product_ratingCount, left_on='product_title',
+                                                                right_on='product_title', how='left')
+    # Set threshold for required review count
+    popularity_threshold = 50
+
+    # Get records with product popularity threshold
+    cleaned_data = rating_with_totalRatingCount.query(
+        "totalRatingCount >= @popularity_threshold")
+
+    return cleaned_data

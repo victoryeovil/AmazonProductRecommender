@@ -5,6 +5,7 @@ from pathlib import Path
 
 from surprise import Dataset, Reader
 from surprise.dump import *
+
 from utils.common import get_customer_reviewed_products, get_product_name
 
 
@@ -16,20 +17,23 @@ def get_knn_recommendation(customer_id, data_main, top_n=10):
 
     training_set = data.build_full_trainset()
 
-    filename = Path().joinpath('resources','models','knn.model')
-
+    # Read saved Model
+    filename = Path().joinpath('resources', 'models', 'knn.model')
     model = load(file_name=filename)
+
+    # Generate the Similarity Matrix
     similarity_matrix = model[1].compute_similarities()
 
-    test_subject = customer_id
     k = top_n
 
-    test_subject_iid = training_set.to_inner_uid(test_subject)
-    test_subject_ratings = training_set.ur[test_subject_iid]
-    k_neighbors = heapq.nlargest(k, test_subject_ratings, key=lambda t: t[1])
+    # Convert Raw Id to Inner Id for selected Customer
+    customer_inner_id = training_set.to_inner_uid(customer_id)
+    selected_customer_ratings = training_set.ur[customer_inner_id]
+    k_neighbors = heapq.nlargest(k, selected_customer_ratings, key=lambda t: t[1])
 
     candidates = defaultdict(float)
 
+    # Get Item Similar to those reviewed by Customer
     for itemID, rating in k_neighbors:
         try:
             similarities = similarity_matrix[itemID]
@@ -38,19 +42,20 @@ def get_knn_recommendation(customer_id, data_main, top_n=10):
         except:
             continue
 
-    watched = {}
-    for itemID, rating in training_set.ur[test_subject_iid]:
-        watched[itemID] = 1
+    # Add Items Already Review To A Dictionary
+    rated = {}
+    for itemID, rating in training_set.ur[customer_inner_id]:
+        rated[itemID] = 1
 
+    # Loop through list & Remove Already reviewed Products
     recommendations = []
-
     position = 0
     for itemID, rating_sum in sorted(candidates.items(), key=itemgetter(1), reverse=True):
-        if not itemID in watched:
+        if not itemID in rated:
             recommendations.append(get_product_name(products, training_set.to_raw_iid(itemID)))
             position += 1
             if position > top_n:
-                break  # We only want top 10
+                break  # We only want top_n recommendations
 
     rated_products = get_customer_reviewed_products(data_main, customer_id)
 
