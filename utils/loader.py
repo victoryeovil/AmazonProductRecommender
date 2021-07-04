@@ -23,8 +23,7 @@ def load_product_titles(path_to_products):
                      error_bad_lines=False,
                      warn_bad_lines=False, )
     df = df.dropna()
-    product_list = df['product_title'].to_list()
-    return product_list
+    return df['product_title'].to_list()
 
 
 # @st.cache
@@ -43,9 +42,7 @@ def load_customer_ids(data_main):
         Customer ID.
     """
     data_main = data_main.dropna()
-    customer_list = data_main['customer_id'].drop_duplicates().to_list()
-
-    return customer_list
+    return data_main['customer_id'].drop_duplicates().to_list()
 
 
 def get_trained_models(path_to_models):
@@ -79,8 +76,5 @@ def get_main_dataframe(dataset_path):
     # Set threshold for required review count
     popularity_threshold = 50
 
-    # Get records with product popularity threshold
-    cleaned_data = rating_with_totalRatingCount.query(
+    return rating_with_totalRatingCount.query(
         "totalRatingCount >= @popularity_threshold")
-
-    return cleaned_data

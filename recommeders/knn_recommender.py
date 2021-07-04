@@ -45,15 +45,12 @@ def get_knn_recommendation(customer_id, data_main, top_n=10):
             continue
 
     # Add Items Already Review To A Dictionary
-    rated = {}
-    for itemID, rating in training_set.ur[customer_inner_id]:
-        rated[itemID] = 1
-
+    rated = {itemID: 1 for itemID, _ in training_set.ur[customer_inner_id]}
     # Loop through list & Remove Already reviewed Products
     recommendations = []
     position = 0
     for itemID, rating_sum in sorted(candidates.items(), key=itemgetter(1), reverse=True):
-        if not itemID in rated:
+        if itemID not in rated:
             recommendations.append(get_product_name(products, training_set.to_raw_iid(itemID)))
             position += 1
             if position > top_n:

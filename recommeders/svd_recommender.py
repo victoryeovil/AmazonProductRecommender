@@ -27,14 +27,16 @@ def get_svd_recommendation(customer_id, data_main, top_n=10):
     k = top_n + len(selected_customer_ratings)
 
     # Add Items Already Review To A Dictionary
-    rated = {}
-    for itemID, rating in training_set.ur[customer_inner_id]:
-        rated[training_set.to_raw_iid(itemID)] = 1
+    rated = {
+        training_set.to_raw_iid(itemID): 1
+        for itemID, _ in training_set.ur[customer_inner_id]
+    }
 
     # Get Predictions for All Products for selected Customer
-    all_recommendations = []
-    for item in products.product_id:
-        all_recommendations.append(model[1].predict(uid=customer_id, iid=item))
+    all_recommendations = [
+        model[1].predict(uid=customer_id, iid=item)
+        for item in products.product_id
+    ]
 
     # Sort Predicted Ratings in Descending Order & get the top_n + customer review count
     k_recommendations = heapq.nlargest(k, all_recommendations, key=lambda t: t[3])
@@ -46,7 +48,7 @@ def get_svd_recommendation(customer_id, data_main, top_n=10):
     position = 0
     recommendations = []
     for rec in top_t[customer_id]:
-        if not rec[0] in rated:
+        if rec[0] not in rated:
             recommendations.append(get_product_name(products, rec[0]))
             position += 1
             if position > top_n:
